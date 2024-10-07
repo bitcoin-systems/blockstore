@@ -1,3 +1,8 @@
+mod provider;
+
+//use crate::provider;
+
+
 fn main() {
-    println!("Hello, world!");
+    provider::rpc::request("");
 }

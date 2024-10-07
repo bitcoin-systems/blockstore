@@ -20,3 +20,5 @@ Expose blockchain data via public endpoints
 # Indexing service
 
 Configurable start and end blocks 
+
+# Specification
