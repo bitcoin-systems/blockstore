@@ -34,4 +34,5 @@ pub fn request() {
   // Convert the response from bytes to a string and print it
   let response = String::from_utf8_lossy(&buffer);
   println!("Response : {}", response);
+
 }
