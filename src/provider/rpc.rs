@@ -1,7 +1,7 @@
 use std::io::{Read, Write};
 use std::net::TcpStream;
 
-pub fn request(url: &str) {
+pub fn request() {
   let host = "bsc.drpc.org";
   let port = 80;
   let path = "";
@@ -33,5 +33,6 @@ pub fn request(url: &str) {
 
   // Convert the response from bytes to a string and print it
   let response = String::from_utf8_lossy(&buffer);
-  println!("Response: {}", response);
+  println!("Response : {}", response);
+
 }
