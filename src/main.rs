@@ -1,5 +1,6 @@
 use alloy::providers::{Provider, ProviderBuilder, WsConnect};
 use eyre::Result;
+use futures_util::{stream, StreamExt};
 mod provider;
 
 #[tokio::main]
@@ -19,15 +20,15 @@ async fn main() -> Result<()> {
     }
 
     // Create a provider.
-    let ws = WsConnect::new("wss://bsc-rpc.publicnode.com".parse()?);
+    let ws = WsConnect::new("wss://bsc-rpc.publicnode.com");
     let provider = ProviderBuilder::new().on_ws(ws).await?;
 
     // Subscribe to blocks.
     let subscription = provider.subscribe_blocks().await?;
     let mut stream = subscription.into_stream().take(2);
 
-    while let Some(block) = stream.next().await {
-        println!("Received block number: {}", block.header.number);
+    while let Some(header) = stream.next().await {
+        println!("Received block number: {}", header.number);
     }
 
     // Poll for block headers.
