@@ -1,10 +1,34 @@
 use alloy::providers::{Provider, ProviderBuilder, WsConnect};
 use eyre::Result;
 use futures_util::{stream, StreamExt};
+use std::thread;
+mod chains;
 mod provider;
+use crate::chains::chains::CHAINS;
 
 #[tokio::main]
 async fn main() -> Result<()> {
+    let mut threads = vec![];
+    for chain in CHAINS.into_iter() {
+        let thread_handle = thread::spawn(move || {
+            println!("thread chain: {:?}", chain.name);
+
+            chain.name
+        });
+        threads.push(thread_handle);
+    }
+
+    for t in threads {
+        match t.join() {
+            Ok(result) => {
+                println!("thread result: {:?}", result);
+            }
+            Err(err) => {
+                println!("thread error {:?}", err);
+            }
+        }
+    }
+
     let rpc_url = "https://eth.merkle.io".parse()?;
     let provider = ProviderBuilder::new().on_http(rpc_url);
     let block = provider.get_block_number().await;
