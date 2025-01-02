@@ -1,4 +1,6 @@
 use alloy::providers::{Provider, ProviderBuilder, WsConnect};
+use alloy::rpc::types::BlockTransactionsKind;
+use alloy::eips::BlockNumberOrTag;
 use eyre::Result;
 use futures_util::{stream, StreamExt};
 use std::thread;
@@ -53,6 +55,8 @@ async fn main() -> Result<()> {
 
     while let Some(header) = stream.next().await {
         println!("Received block number: {}", header.number);
+        let full_block = provider.get_block_by_number(BlockNumberOrTag::Latest, BlockTransactionsKind::Full).await;
+        println!("full block: {:?}", full_block);
     }
 
     // Poll for block headers.
