@@ -3,7 +3,6 @@ use alloy::rpc::types::BlockTransactionsKind;
 use alloy::eips::BlockNumberOrTag;
 use eyre::Result;
 use futures_util::{stream, StreamExt};
-use std::thread;
 mod chains;
 mod provider;
 use crate::chains::chains::CHAINS;
@@ -12,8 +11,22 @@ use crate::chains::chains::CHAINS;
 async fn main() -> Result<()> {
     let mut threads = vec![];
     for chain in CHAINS.into_iter() {
-        let thread_handle = thread::spawn(move || {
+        let thread_handle = tokio::spawn(async move {
             println!("thread chain: {:?}", chain.name);
+
+            let rpc_url = chain.rpc.parse().unwrap();
+            let provider = ProviderBuilder::new().on_http(rpc_url);
+            let block = provider.get_block_number().await;
+        
+            match block {
+                Ok(val) => {
+                    println!("block: {val}");
+                }
+                Err(e) => {
+                    println!("{e}");
+                    println!("error");
+                }
+            }
 
             chain.name
         });
@@ -21,27 +34,13 @@ async fn main() -> Result<()> {
     }
 
     for t in threads {
-        match t.join() {
+        match t.await {
             Ok(result) => {
                 println!("thread result: {:?}", result);
             }
             Err(err) => {
                 println!("thread error {:?}", err);
             }
-        }
-    }
-
-    let rpc_url = "https://eth.merkle.io".parse()?;
-    let provider = ProviderBuilder::new().on_http(rpc_url);
-    let block = provider.get_block_number().await;
-
-    match block {
-        Ok(val) => {
-            println!("block: {val}");
-        }
-        Err(e) => {
-            println!("{e}");
-            println!("error");
         }
     }
 
