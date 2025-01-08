@@ -12,8 +12,6 @@ async fn main() -> Result<()> {
     let mut threads = vec![];
     for chain in CHAINS.into_iter() {
         let thread_handle = tokio::spawn(async move {
-            println!("thread chain: {:?}", chain.name);
-
             let rpc_url = chain.rpc.parse().unwrap();
             let provider = ProviderBuilder::new().on_http(rpc_url);
             let block = provider.get_block_number().await;
