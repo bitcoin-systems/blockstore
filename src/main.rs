@@ -50,7 +50,6 @@ async fn main() -> Result<()> {
     let mut stream = subscription.into_stream(); //.take(2);
 
     while let Some(header) = stream.next().await {
-        println!("Received block number: {}", header.number);
         let full_block = provider.get_block_by_number(BlockNumberOrTag::Latest, BlockTransactionsKind::Full).await;
         println!("full block: {:?}", full_block);
     }
