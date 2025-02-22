@@ -1,4 +1,4 @@
-# blockstore
+# Blockstore
 
 Blockstore is EVM blockchain indexer written in RUST. It will index following entries from any EVM compatible chain.
 
@@ -22,3 +22,7 @@ Expose blockchain data via public endpoints
 Configurable start and end blocks 
 
 # Specification
+
+# Dependencies
+
+Purely written in Rust without any dependencies.
